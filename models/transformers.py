@@ -1,0 +1,247 @@
+#
+# Copyright (C) 2022 Apple Inc. All rights reserved.
+#
+from typing import Optional, List, Tuple
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from transformers import ViTFeatureExtractor, ViTModel
+from .resnet import BasisChange
+import numpy as np
+from torch.nn.utils.parametrizations import orthogonal
+from transformers import CLIPFeatureExtractor, CLIPVisionModel
+from transformers import CLIPTokenizer, CLIPModel
+
+
+class VIT(nn.Module):
+    """
+    VIT model for image classification
+    """
+
+    def __init__(self,
+                 embedding_dim: int = 128,
+                 pretrained_name: str = 'openai/clip-vit-base-patch32',
+                 num_classes: int = 1000,
+                 norm_feature: bool = False) -> None:
+        super(VIT, self).__init__()
+        self.transformer = ViTModel.from_pretrained(pretrained_name)
+        self.feature_extractor = ViTFeatureExtractor.from_pretrained(
+            pretrained_name)
+        self.embedding_dim = embedding_dim
+        self.embedding_fc = nn.Linear(768, embedding_dim)
+        self.output_fc = nn.Linear(embedding_dim, num_classes)
+        self.norm_feature = norm_feature
+
+    def forward(self, x):
+        tokens = x
+        features = self.transformer(tokens).pooler_output
+        features = self.embedding_fc(features)
+        if self.norm_feature:
+            features = F.normalize(features)
+        output = self.output_fc(features)
+        output = output.view(output.size(0), -1)
+        features = features.view(features.size(0), -1)
+        return output, features
+
+
+def VIT_google(num_classes: int,
+               embedding_dim: int,
+               norm_feature: bool = True,
+               **kwargs) -> nn.Module:
+    """Get a Vit Google model.
+
+    :param num_classes: Number of classes in the dataset.
+    :param embedding_dim: Size of the output embedding dimension.
+    :param last_nonlin: Whether to apply non-linearity before output.
+    :return: ResNet50 Model.
+    """
+    return VIT(
+        num_classes=num_classes,
+        pretrained_name='google/vit-base-patch16-224-in21k',
+        embedding_dim=embedding_dim,
+        norm_feature=norm_feature
+    )
+
+
+# class VIT_shallow(nn.Module):
+#     """
+#     ResNet + shallow neural network
+#     """
+
+#     def __init__(self,
+#                  embedding_dim: int = 128,
+#                  pretrained_name: str = 'openai/clip-vit-base-patch32',
+#                  num_classes: int = 1000,
+#                  norm_feature: bool = False
+#                  ) -> None:
+#         super(VIT_shallow, self).__init__()
+#         self.transformer = ViTModel.from_pretrained(pretrained_name)
+#         self.feature_extractor = ViTFeatureExtractor.from_pretrained(
+#             pretrained_name)
+#         self.embedding_dim = embedding_dim
+#         self.norm_feature = norm_feature
+#         self.fc1 = nn.Linear(768, embedding_dim*2)
+#         self.fc2 = nn.Linear(embedding_dim*2, embedding_dim)
+#         self.fc_out = nn.Linear(embedding_dim, num_classes)
+
+#     def forward(self, x):
+#         x = self.transformer(x).pooler_output
+#         old_features = self.fc1(x)
+#         features = self.fc2(old_features)
+#         old_features = old_features.reshape(old_features.size(0), -1)[:,
+#                                                                       :self.embedding_dim]
+#         if self.norm_feature:
+#             old_features = F.normalize(old_features)
+#             features = F.normalize(features)
+#         output = self.fc_out(features)
+
+#         # return output, x
+
+#         return output, old_features, features
+
+
+# def VIT_google_shallow(num_classes: int,
+#                        embedding_dim: int,
+#                        norm_feature: bool = True,
+#                        **kwargs) -> nn.Module:
+#     """Get a Vit google wideshallow model.
+
+#     :param num_classes: Number of classes in the dataset.
+#     :param embedding_dim: Size of the output embedding dimension.
+#     :param last_nonlin: Whether to apply non-linearity before output.
+#     :return: ResNet50 Model.
+#     """
+#     return VIT_shallow(
+#         num_classes=num_classes,
+#         pretrained_name='google/vit-base-patch16-224-in21k',
+#         embedding_dim=embedding_dim,
+#         norm_feature=norm_feature,
+#     )
+
+
+class VIT_pretrained(nn.Module):
+    """
+    ResNet + shallow neural network
+    """
+
+    def __init__(self,
+                 embedding_dim: int = 128,
+                 pretrained_name: str = 'openai/clip-vit-base-patch32',
+                 num_classes: int = 1000,
+                 norm_feature: bool = False
+                 ) -> None:
+        super(VIT_pretrained, self).__init__()
+        self.transformer = ViTModel.from_pretrained(pretrained_name)
+        self.feature_extractor = CLIPFeatureExtractor.from_pretrained(
+            pretrained_name)
+
+    def forward(self, x):
+        x = self.transformer(x).pooler_output
+        return x
+
+
+def VIT_CLIP_pretrained(num_classes: int,
+                        embedding_dim: int,
+                        norm_feature: bool = True,
+                        **kwargs) -> nn.Module:
+    """Get a Vit google wideshallow model.
+
+    :param num_classes: Number of classes in the dataset.
+    :param embedding_dim: Size of the output embedding dimension.
+    :param last_nonlin: Whether to apply non-linearity before output.
+    :return: ResNet50 Model.
+    """
+    return VIT_pretrained(
+        num_classes=num_classes,
+        pretrained_name='openai/clip-vit-base-patch32',
+        embedding_dim=embedding_dim,
+        norm_feature=norm_feature,
+    )
+
+
+class VIT_ortho_shallow(nn.Module):
+    """
+    ResNet + shallow neural network
+    """
+
+    def __init__(self,
+                 embedding_dim: int = 128,
+                 pretrained_name: str = 'openai/clip-vit-base-patch32',
+                 num_classes: int = 1000,
+                 norm_feature: bool = False,
+                 to_add_dim: int = 32,
+                 C: float = 3) -> None:
+        super(VIT_ortho_shallow, self).__init__()
+        self.transformer = ViTModel.from_pretrained(pretrained_name)
+        self.feature_extractor = ViTFeatureExtractor.from_pretrained(
+            pretrained_name)
+        self.embedding_dim = embedding_dim
+        self.norm_feature = norm_feature
+        self.fc1 = nn.Linear(768, embedding_dim*2)
+        self.fc2 = nn.Linear(embedding_dim*2, embedding_dim)
+        self.fc_out = nn.Linear(embedding_dim, num_classes)
+        self.to_add = to_add_dim
+        self.ortholinear_p = orthogonal(
+            nn.Linear(embedding_dim, embedding_dim, bias=False))
+        self.ortholinear_old = orthogonal(
+            nn.Linear(embedding_dim, to_add_dim, bias=False))
+        self.ortholinear_old2 = orthogonal(
+            nn.Linear(embedding_dim, embedding_dim, bias=False))
+        # self.basischange = BasisChange(embedding_dim, add_on_dim)
+        self.C = C
+#         self.z = nn.Parameter(torch.Tensor([0.3]))
+
+    def forward(self, x):
+        #         self.z.data = torch.clamp(self.z.data, max = 1)
+        #         self.z = nn.Parameter(torch.clamp(self.z, max = 1))
+        x = self.transformer(x).pooler_output
+        old_features = self.fc1(x)
+        features = self.fc2(old_features)
+        old_features = old_features.reshape(old_features.size(0), -1)[:,
+                                                                      :self.embedding_dim]
+        features = features[:, :self.to_add]
+        if self.norm_feature:
+            old_features = F.normalize(old_features)
+            features = F.normalize(features)
+        old_features, features = features, old_features
+
+        old_features = F.normalize(old_features[:, :self.to_add])
+
+        new_feature = torch.cat([old_features,
+                                 self.ortholinear_p(self.C*features)], dim=1)
+        bct_feature = self.ortholinear_old2(new_feature[:, :-self.to_add])
+        to_add_feature = new_feature[:, -self.to_add:]
+        # old_features, features = features, old_features
+
+        # bct_feature, add_on_feature = self.basischange(old_features, self.C* features)
+        # bct_feature = bct_feature.view(bct_feature.size(0), -1)
+        # add_on_feature = add_on_feature.view(add_on_feature.size(0), -1)
+        new_feature = torch.cat([bct_feature, to_add_feature], dim=1)
+        output = self.fc_out(features)
+        return output, bct_feature, features, new_feature
+
+        return output, old_features, features
+
+
+def VIT_google_ortho_shallow(num_classes: int,
+                             embedding_dim: int,
+                             norm_feature: bool = True,
+                             to_add_dim: int = 32,
+                             C: float = 3,
+                             **kwargs) -> nn.Module:
+    """Get a Vit google wideshallow model.
+
+    :param num_classes: Number of classes in the dataset.
+    :param embedding_dim: Size of the output embedding dimension.
+    :param last_nonlin: Whether to apply non-linearity before output.
+    :return: ResNet50 Model.
+    """
+    return VIT_ortho_shallow(
+        num_classes=num_classes,
+        pretrained_name='google/vit-base-patch16-224-in21k',
+        embedding_dim=embedding_dim,
+        norm_feature=norm_feature,
+        to_add_dim=to_add_dim,
+        C=C,
+    )

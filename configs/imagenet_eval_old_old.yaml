@@ -1,0 +1,35 @@
+arch_params:
+  arch: VIT_google
+  num_classes: 1000 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  embedding_dim_old: 128
+  last_nonlin: True
+  norm_feature: True
+  to_add_dim: 32
+  C: 2
+
+# gallery_arch_params:
+#   arch: ResNet50_ortho
+#   num_classes: 1000 # This is the number of classes for architecture FC layer.
+#   embedding_dim: 128
+#   embedding_dim_old: 128
+#   last_nonlin: True
+#   norm_feature: True
+#   to_add_dim: 32
+#   C: 2
+
+gallery_model_path: checkpoints/imagenet_old100.pt
+query_model_path: checkpoints/imagenet_BCT_alpha10_vit.pt.checkpoint
+
+eval_params:
+  distance_metric: cosine
+  verbose: True
+  compute_map: True
+  per_class: False
+
+dataset_params: # Test set of the dataset will be used as both gallery and query sets.
+  name: imagenet
+  data_root: /home/yz639/BCT/ml-fct/data_store/imagenet-1k
+  num_workers: 4
+  batch_size: 32
+  # num_classes: 1000

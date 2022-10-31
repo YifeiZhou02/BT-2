@@ -1,0 +1,35 @@
+arch_params:
+  arch: BackboneBase
+  num_classes: 100 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  architecture: vgg19_bn
+  last_nonlin: True
+  norm_feature: True
+   
+old_embedding_dim: 128
+optimizer_params:
+  algorithm: adam
+  lr: 0.001
+  weight_decay: 0.000030517578125
+  no_bn_decay: False
+  momentum: 0.875
+  nesterov: False
+
+dataset_params:
+  name: cifar100
+  data_root: data_store/cifar-100-python # This should contain training and validation dirs.
+  num_classes: 100 # This is the number of classes to include for training.
+  num_workers: 16
+  batch_size: 128
+
+lr_policy_params:
+  algorithm: cosine_lr
+  warmup_length: 5
+  epochs: 100
+  lr: 0.001
+
+epochs: 100
+label_smoothing: 0.1
+alpha: 10
+old_model_path: checkpoints/cifar100_alex.pt
+output_model_path: checkpoints/cifar100_alex2vgg.pt

@@ -1,0 +1,51 @@
+arch_params:
+  arch: VIT_google_ortho_shallow
+  num_classes: 1000 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  embedding_dim_old: 128
+  last_nonlin: True
+  norm_feature: True
+  to_add_dim: 32
+  C: 2
+
+optimizer_params:
+  algorithm: sgd
+  lr: 0.01
+  weight_decay: 0
+  no_bn_decay: False
+  momentum: 0.9
+  nesterov: False
+
+# optimizer_params:
+#   algorithm: adam
+#   lr: 0.0001
+#   weight_decay: 0
+#   no_bn_decay: False
+#   momentum: 0.875
+#   nesterov: False
+
+new_arch_params:
+  arch: VIT_google
+  num_classes: 1000 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  last_nonlin: True
+  norm_feature: True
+
+lr_policy_params:
+  algorithm: cosine_lr
+  warmup_length: 2
+  epochs: 25
+  lr: 0.01
+
+dataset_params:
+  name: imagenet
+  data_root: /share/cuvl/spectral_bct/imagenet-1k # This should contain training and validation dirs.
+  num_classes: 1000 # This is the number of classes to include for training.
+  num_workers: 32
+  batch_size: 64
+
+epochs: 25
+old_model_path: checkpoints/imagenet_old100.pt
+new_model_path: checkpoints/imagenet_new_vit128_sgd.pt.checkpoint
+# start_model_path: checkpoints/cifar100_old_eigen.pt
+output_model_path: checkpoints/imagenet_transfer_new_vit_add32.pt

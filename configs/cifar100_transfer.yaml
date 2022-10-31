@@ -1,0 +1,52 @@
+arch_params:
+  arch: VIT_google_ortho_shallow
+  num_classes: 100 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  embedding_dim_old: 128
+  last_nonlin: True
+  norm_feature: True
+  to_add_dim: 32
+  C: 2
+
+# optimizer_params:
+#   algorithm: adam
+#   lr: 0.0002
+#   weight_decay: 0
+#   no_bn_decay: False
+#   momentum: 0.875
+#   nesterov: False
+
+new_arch_params:
+  arch: VIT_google
+  num_classes: 100 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  embedding_dim_old: 128
+  last_nonlin: True
+  norm_feature: True
+
+optimizer_params:
+  algorithm: sgd
+  lr: 0.01
+  weight_decay: 0
+  no_bn_decay: False
+  momentum: 0.9
+  nesterov: False
+
+dataset_params:
+  name: cifar100 #imagenet
+  data_root: data_store/cifar-100-python # /home/yz639/BCT/imagenet-1k # This should contain training and validation dirs.
+  num_classes: 100 # This is the number of classes to include for training.
+  num_workers: 16
+  batch_size: 64
+
+lr_policy_params:
+  algorithm: cosine_lr
+  warmup_length: 2
+  epochs: 10
+  lr: 0.01
+
+epochs: 10
+old_model_path: checkpoints/cifar100_old_normed.pt 
+new_model_path: checkpoints/cifar100_new_vit128sgd.pt.checkpoint
+# start_model_path: checkpoints/cifar100_old_eigen.pt
+output_model_path: checkpoints/cifar100_transferred_vit10loss.pt

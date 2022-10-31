@@ -1,0 +1,24 @@
+arch_params:
+  arch: VIT_google_ortho_shallow
+  num_classes: 100 # This is the number of classes for architecture FC layer.
+  embedding_dim: 512
+  last_nonlin: True
+  norm_feature: True
+  to_add_dim: 32
+  C: 2
+
+gallery_model_path: checkpoints/cifar100_new_vit.pt 
+query_model_path: checkpoints/cifar100_transferred_vit_orthoshallow_clip3.pt.checkpoint
+path2caption_path: cifar100_captions.json
+
+eval_params:
+  distance_metric: cosine
+  verbose: True
+  compute_map: True
+  per_class: False
+
+dataset_params: # Test set of the dataset will be used as both gallery and query sets.
+  name: cifar100
+  data_root: data_store/cifar-100-python
+  num_workers: 4
+  batch_size: 128
