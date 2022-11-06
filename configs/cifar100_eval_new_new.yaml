@@ -1,11 +1,4 @@
-# arch_params:
-#   arch: ResNet50_ortho
-#   num_classes: 100 # This is the number of classes for architecture FC layer.
-#   embedding_dim: 128
-#   last_nonlin: True
-#   norm_feature: True
-#   to_add_dim: 32
-#   C: 2
+
 arch_params:
   arch: VIT_google_ortho_shallow
   num_classes: 100 # This is the number of classes for architecture FC layer.
@@ -17,11 +10,7 @@ arch_params:
   C: 2
 
 query_model_path:  checkpoints/cifar100_new_transfer_vit.pt.checkpoint
-# gallery_model_path: ../checkpoints/cifar100_old_normed.pt
-# query_model_path: ../checkpoints/cifar100_new_resnet50_ortho_no_pseudo.pt.checkpoint
-
-# query_model_path: ../checkpoints/cifar100_new_independent.pt
-# gallery_model_path: ../checkpoints/cifar100_new_independent.pt
+# If gallery model is not specified, then default to be query_model 
 
 eval_params:
   distance_metric: cosine

@@ -1,0 +1,32 @@
+arch_params:
+  arch: VIT_google
+  num_classes: 1000 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  last_nonlin: True
+  norm_feature: True
+
+optimizer_params:
+  algorithm: sgd
+  lr: 0.01
+  weight_decay: 0
+  no_bn_decay: False
+  momentum: 0.9
+  nesterov: False
+
+dataset_params:
+  name: imagenet
+  data_root: data_store/imagenet-1k # /home/yz639/BCT/imagenet-1k # This should contain training and validation dirs.
+  num_classes: 1000 # This is the number of classes to include for training.
+  num_workers: 16
+  batch_size: 256
+
+lr_policy_params:
+  algorithm: cosine_lr
+  warmup_length: 2
+  epochs: 25
+  lr: 0.01
+
+epochs: 25
+alpha: 10
+old_model_path: checkpoints/imagenet_old.pt 
+output_model_path: checkpoints/imagenet_bct_vit.pt

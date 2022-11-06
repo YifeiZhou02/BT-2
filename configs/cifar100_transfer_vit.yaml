@@ -5,9 +5,10 @@ arch_params:
   embedding_dim_old: 128
   last_nonlin: True
   norm_feature: True
-  to_add_dim: 64
+  to_add_dim: 32
   C: 2
-
+  
+#the architecture config of the new' model
 new_arch_params:
   arch: VIT_google
   num_classes: 100 # This is the number of classes for architecture FC layer.

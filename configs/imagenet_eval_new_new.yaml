@@ -1,14 +1,14 @@
 arch_params:
   arch: VIT_google_ortho_shallow
-  num_classes: 100 # This is the number of classes for architecture FC layer.
+  num_classes: 1000 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
+  embedding_dim_old: 128
   last_nonlin: True
   norm_feature: True
   to_add_dim: 32
   C: 2
 
-gallery_model_path: checkpoints/cifar100_old.pt
-query_model_path: checkpoints/cifar100_new_transfer_vit.pt.checkpoint
+query_model_path:  checkpoints/imagenet_new_transfer_vit.pt.checkpoint
 
 
 eval_params:
@@ -18,7 +18,7 @@ eval_params:
   per_class: False
 
 dataset_params: # Test set of the dataset will be used as both gallery and query sets.
-  name: cifar100
-  data_root: data_store/cifar-100-python
+  name: imagenet
+  data_root: data_store/imagenet-1k
   num_workers: 16
   batch_size: 256

@@ -1,6 +1,3 @@
-#
-# Copyright (C) 2022 Apple Inc. All rights reserved.
-#
 from typing import Optional, List, Tuple
 
 import torch
