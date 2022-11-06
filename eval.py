@@ -24,21 +24,25 @@ def main(config: Dict) -> None:
     device = torch.device("cuda:0") if torch.cuda.is_available() else "cpu"
 
     # Load models:
-    model = get_model(config.get('arch_params'))
-    checkpoint = torch.load(config.get('query_model_path'))
-    try:
-        model.load_state_dict(checkpoint['model_state_dict'])
-    except:
-        model = torch.nn.DataParallel(model)
-        model.load_state_dict(checkpoint['model_state_dict'])
-    gallery_model = model.to(device)
-    query_model = model.to(device)
-    # if config.get('gallery_arch_params') is not None:
-    #     gallery_model = get_model(config.get('gallery_arch_params'))
-    #     checkpoint = torch.load(config.get('gallery_model_path'))
-    #     gallery_model.load_state_dict(checkpoint['model_state_dict'])
-    # gallery_model = torch.jit.load(config.get('gallery_model_path')).to(device)
-    # query_model = torch.jit.load(config.get('query_model_path')).to(device)
+    if config.get('arch_params') is not None:
+        model = get_model(config.get('arch_params'))
+        checkpoint = torch.load(config.get('query_model_path'))
+        try:
+            model.load_state_dict(checkpoint['model_state_dict'])
+        except:
+            model = torch.nn.DataParallel(model)
+            model.load_state_dict(checkpoint['model_state_dict'])
+        gallery_model = model.to(device)
+        query_model = model.to(device)
+    else:
+        query_model = torch.jit.load(config.get('query_model_path')).to(device)
+    if config.get('gallery_arch_params') is not None:
+        gallery_model = get_model(config.get('gallery_arch_params'))
+        checkpoint = torch.load(config.get('gallery_model_path'))
+        gallery_model.load_state_dict(checkpoint['model_state_dict'])
+    if config.get('gallery_model_path') is not None:
+        gallery_model = torch.jit.load(
+            config.get('gallery_model_path')).to(device)
 
     if isinstance(gallery_model, torch.nn.DataParallel):
         gallery_model = gallery_model.module

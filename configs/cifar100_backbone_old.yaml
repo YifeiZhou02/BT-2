@@ -1,8 +1,7 @@
 arch_params:
-  arch: BackboneBase
+  arch: ResNet50
   num_classes: 100 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
-  architecture: vgg19_bn
   last_nonlin: True
   norm_feature: True
 
@@ -29,4 +28,4 @@ lr_policy_params:
 
 epochs: 100
 label_smoothing: 0.1
-output_model_path: checkpoints/cifar100_vgg19.pt
+output_model_path: checkpoints/cifar100_old.pt

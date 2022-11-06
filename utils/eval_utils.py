@@ -315,7 +315,6 @@ def cmc_evaluate(
             # print(query_feature.size())
             # gallery_feature = torch.where(
             #     label.reshape(-1, 1) < 500, gallery_feature, query_feature)
-            gallery_feature = query_feature
 
             gallery_features.append(gallery_feature.squeeze())
             query_features.append(query_feature.squeeze())

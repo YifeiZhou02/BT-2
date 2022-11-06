@@ -1,5 +1,15 @@
-gallery_model_path: checkpoints/cifar100_old_normed.pt
-query_model_path: checkpoints/cifar100_new_normed.pt
+arch_params:
+  arch: VIT_google_ortho_shallow
+  num_classes: 100 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  last_nonlin: True
+  norm_feature: True
+  to_add_dim: 64
+  C: 2
+
+gallery_model_path: checkpoints/cifar100_old.pt
+query_model_path: checkpoints/cifar100_new_transfer_vit.pt.checkpoint
+
 
 eval_params:
   distance_metric: cosine

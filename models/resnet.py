@@ -460,7 +460,7 @@ def BackboneBase(num_classes: int,
     :param embedding_dim: Size of the output embedding dimension.
     :param norm_feature: Whether to normalized output embeddings.
     :param architecture: Network architecture of the backbone model.
-    :return: a Backbone model with architecture as specified
+    :return: a Backbone model with architecture as specified.
     """
     return Backbone(
         num_classes=num_classes,
@@ -501,10 +501,10 @@ class ResNet_ortho(nn.Module):
         :param last_nonlin: Whether to apply non-linearity before output.
         :param norm_feature: Whether to normalized output embeddings.
         :param to_add_dim: Size of the additional dimension, so that the final 
-            output dimension is to_add_dim + embedding_dim
-        :param C: float
+            output dimension is to_add_dim + embedding_dim.
+        :param C: float.
         :param architecture: the architecture to use for backbone, chosen from
-            resnet50, alexnet, , vgg13_bn and vgg19_bn
+            resnet50, alexnet, , vgg13_bn and vgg19_bn.
         """
         super(ResNet_ortho, self).__init__()
         if embedding_dim_old == None:
@@ -523,7 +523,7 @@ class ResNet_ortho(nn.Module):
                 embedding_dim=embedding_dim,
                 norm_feature=norm_feature,
                 architecture=architecture)
-            self.embedding_dim = embedding_dim
+        self.embedding_dim = embedding_dim
         self.norm_feature = norm_feature
         self.fc3 = nn.Conv2d(embedding_dim+embedding_dim_old, embedding_dim_old, kernel_size=1,
                              stride=1, bias=True)
@@ -536,6 +536,17 @@ class ResNet_ortho(nn.Module):
         self.C = C
 
     def forward(self, x):
+        """
+        Forward pass
+        :return output: classification logits.
+        :return bct_feature: the embedding layer that is trained to
+            match the old embedding.
+        :return feature: the embedding layer that is trained to
+            match the new embedding.
+        :return new_feature: the merged embedding that is simultaneously
+            backward compatible with the old embedding and retains inforation
+            of an independently trained new model.
+        """
         _, old_feature = self.resnet(x)
         feature = self.fc3(F.relu(old_feature))
         old_feature = old_feature.reshape(old_feature.size(0), -1)[:,
@@ -573,12 +584,27 @@ def ResNet50_ortho(num_classes: int,
                    C: float = 3,
                    architecture: str = 'resnet50',
                    **kwargs) -> nn.Module:
-    """Get a ResNet50 model.
+    """Get a Backbone+Basis Transformation model.
+        (it has been extended to
+         support other model architectures other than resnet50)
+        :param block: Block module to use in Resnet architecture 
+            (if architecture is specified as resnet50).
+        :param layers: List of number of blocks per layer
+            (if architecture is specified as resnet50).
+        :param num_classes: Number of classes in the dataset. It is used to
+            form linear classifier weights.
+        :param base_width: Base width of the blocks (for resnet50).
+        :param embedding_dim: Size of the new embedding dimension.
+        :param embedding_dim_old: Size of the old embedding dimension.
+        :param last_nonlin: Whether to apply non-linearity before output.
+        :param norm_feature: Whether to normalized output embeddings.
+        :param to_add_dim: Size of the additional dimension, so that the final 
+            output dimension is to_add_dim + embedding_dim.
+        :param C: float.
+        :param architecture: the architecture to use for backbone, chosen from
+            resnet50, alexnet, , vgg13_bn and vgg19_bn.
 
-    :param num_classes: Number of classes in the dataset.
-    :param embedding_dim: Size of the output embedding dimension.
-    :param last_nonlin: Whether to apply non-linearity before output.
-    :return: ResNet50 Model.
+        :return: Backbone+Basis Transformation model.
     """
     return ResNet_ortho(
         Bottleneck,

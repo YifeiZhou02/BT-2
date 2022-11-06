@@ -28,4 +28,4 @@ lr_policy_params:
 
 epochs: 50
 label_smoothing: 0.1
-output_model_path: checkpoints/cifar100_new_vit128sgd.pt
+output_model_path: checkpoints/cifar100_new_vit.pt

@@ -31,14 +31,17 @@ class BCTTrainer():
         :param train_loader: Data loader to train the model.
         :param model: Model to be trained.
         :param criterion: Loss criterion module.
+        :param alpha: the multiplier to control the weight
+            of the influence loss.
         :param optimizer: A torch optimizer object.
         :param device: Device the model is on.
+        :param accelerator: Huggingface accelerator module.
         :return: average of top-1, top-5, and loss on current epoch.
         """
         losses = AverageMeter("Loss", ":.3f")
         top1 = AverageMeter("Acc@1", ":6.2f")
         top5 = AverageMeter("Acc@5", ":6.2f")
-    
+
         model = model.train().to(device)
         pseudo_classifier = pseudo_classifier.to(device)
 
@@ -49,10 +52,11 @@ class BCTTrainer():
             target = target.to(device, non_blocking=True)
 
             output, feature = model(images)
-            pseudo_output = feature.view(feature.size(0) ,-1) @ pseudo_classifier.transpose(0,1)
+            pseudo_output = feature.view(feature.size(
+                0), -1) @ pseudo_classifier.transpose(0, 1)
 
-            loss = criterion(output, target)+ alpha * criterion(pseudo_output, target)
-
+            loss = criterion(output, target) + alpha * \
+                criterion(pseudo_output, target)
 
             acc1, acc5 = accuracy(output, target, topk=(1, 5))
             losses.update(loss.item(), images.size(0))
@@ -72,9 +76,9 @@ class BCTTrainer():
                  criterion: Callable,
                  alpha: float,
                  device: torch.device,
-                accelerator) -> Tuple[float, float, float]:
+                 accelerator) -> Tuple[float, float, float]:
         """Run validation.
-        
+
         :param val_loader: Data loader to evaluate the model.
         :param model: Model to be evaluated.
         :param criterion: Loss criterion module.
@@ -95,10 +99,10 @@ class BCTTrainer():
                 target = target.to(device, non_blocking=True)
 
                 output, feature = model(images)
-                pseudo_output = feature.view(feature.size(0) ,-1) @ pseudo_classifier.transpose(0,1)
+                pseudo_output = feature.view(feature.size(
+                    0), -1) @ pseudo_classifier.transpose(0, 1)
 
                 loss = criterion(output, target)
-
 
                 acc1, acc5 = accuracy(output, target, topk=(1, 5))
                 losses.update(loss.item(), images.size(0))

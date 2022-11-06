@@ -50,10 +50,6 @@ def main(config: Dict) -> None:
     else:
         new_model = torch.jit.load(config.get('new_model_path'))
 
-    # model.resnet.load_state_dict(new_model.state_dict())
-
-    # model.resnet = copy.deepcopy(new_model.get_submodule("resnet"))
-
     if torch.cuda.is_available():
         model = torch.nn.DataParallel(model)
         old_model = torch.nn.DataParallel(old_model)
@@ -63,6 +59,9 @@ def main(config: Dict) -> None:
     optimizer = get_optimizer(model, **config.get('optimizer_params'))
     data = SubImageFolder(**config.get('dataset_params'))
     lr_policy = get_policy(optimizer, **config.get('lr_policy_params'))
+    lambda_1 = float(config.get('lambda_1'))
+    lambda_2 = float(config.get('lambda_2'))
+    lambda_3 = float(config.get('lambda_3'))
     train_loader = data.train_loader
     val_loader = data.val_loader
 
@@ -73,8 +72,6 @@ def main(config: Dict) -> None:
     criterion = nn.CosineSimilarity(dim=1)
 
     print("==>Preparing pesudo classifier")
-    # print(old_model.module.embedding_dim)
-    # print(old_model.module.to_add_dim)
     old_model = accelerator.prepare(old_model)
     num_classes = int(config.get('arch_params')['num_classes'])
     embedding_dim = int(config.get('arch_params')['embedding_dim_old'])
@@ -140,7 +137,10 @@ def main(config: Dict) -> None:
             optimizer=optimizer,
             device=device,
             accelerator=accelerator,
-            pseudo_classifier=pseudo_classifier
+            pseudo_classifier=pseudo_classifier,
+            lambda_1=lambda_1,
+            lambda_2=lambda_2,
+            lambda_3=lambda_3,
         )
 
         print(

@@ -1,12 +1,19 @@
 arch_params:
-  arch: VIT_google
+  arch: VIT_google_ortho_shallow
   num_classes: 100 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
   embedding_dim_old: 128
   last_nonlin: True
   norm_feature: True
-  to_add_dim: 32
+  to_add_dim: 64
   C: 2
+
+new_arch_params:
+  arch: VIT_google
+  num_classes: 100 # This is the number of classes for architecture FC layer.
+  embedding_dim: 128
+  last_nonlin: True
+  norm_feature: True
 
 optimizer_params:
   algorithm: sgd
@@ -30,6 +37,9 @@ lr_policy_params:
   lr: 0.01
 
 epochs: 30
-alpha: 10
+lambda_1: 1
+lambda_2: 10
+lambda_3: 5
 old_model_path: checkpoints/cifar100_old.pt 
-output_model_path: checkpoints/cifar100_bct_vit.pt
+new_model_path: checkpoints/cifar100_new_vit.pt.checkpoint
+output_model_path: checkpoints/cifar100_new_transfer_vit.pt

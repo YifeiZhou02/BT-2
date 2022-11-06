@@ -7,8 +7,8 @@
 #   to_add_dim: 32
 #   C: 2
 
-gallery_model_path: checkpoints/cifar100_alex.pt
-query_model_path: checkpoints/cifar100_alex.pt
+gallery_model_path: checkpoints/cifar100_old.pt
+query_model_path: checkpoints/cifar100_old.pt
 eval_params:
   distance_metric: cosine
   verbose: True
