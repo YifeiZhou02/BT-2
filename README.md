@@ -27,7 +27,7 @@ Please refer to https://www.cs.toronto.edu/~kriz/cifar.html for downloading Cifa
 Please refer to https://www.image-net.org/challenges/LSVRC/2012/index.php for downloading the Imagenet 1k.
 
 ## Sample Experiments on Cifar 100
-We provide training and evaluation experiment configurations for Cifar 100 in <code>./configs</code>. The following commands are backward compatible training experiments from ResNet50 to VitB16.
+We provide training and evaluation experiment configurations for Cifar 100 in <code>./configs</code>. The following commands are backward compatible training experiments from ResNet50 to ResNet50 (with data change of 50 classes to 100 classes).
 
 ### Train Old Backbone Model
 <code>python train_backbone.py --config configs/cifar100_backbone_old.yaml</code>
@@ -36,7 +36,7 @@ We provide training and evaluation experiment configurations for Cifar 100 in <c
 <code>python train_backbone.py --config configs/cifar100_backbone_new.yaml</code>
 
 ### Train Backward-compatible New Model with Basis Transformation
-<code>python train_feature_transfer.py --config configs/cifar100_transfer_vit.yaml</code>
+<code>python train_feature_transfer.py --config configs/cifar100_transfer.yaml</code>
 
 ### Train Backward-compatible New Model with BCT (https://arxiv.org/abs/2003.11942)
 <code>python train_BCT.py --config configs/cifar100_BCT.yaml</code>
