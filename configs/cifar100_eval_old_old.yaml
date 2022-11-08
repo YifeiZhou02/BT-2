@@ -1,5 +1,5 @@
-gallery_model_path: checkpoints/cifar100_old.pt
-query_model_path: checkpoints/cifar100_old.pt
+gallery_model_path: checkpoints/cifar100_new.pt
+query_model_path: checkpoints/cifar100_new.pt
 eval_params:
   distance_metric: cosine
   verbose: True

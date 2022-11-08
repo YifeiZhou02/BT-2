@@ -5,9 +5,9 @@ arch_params:
   embedding_dim_old: 128
   last_nonlin: True
   norm_feature: True
-  to_add_dim: 32
-  C: 2
-  
+  to_add_dim: 128
+  C: 3
+
 #the architecture config of the new' model
 new_arch_params:
   arch: VIT_google
@@ -43,4 +43,4 @@ lambda_2: 10
 lambda_3: 5
 old_model_path: checkpoints/cifar100_old.pt 
 new_model_path: checkpoints/cifar100_new_vit.pt.checkpoint
-output_model_path: checkpoints/cifar100_new_transfer_vit.pt
+output_model_path: checkpoints/cifar100_new_transfer_vit64.pt

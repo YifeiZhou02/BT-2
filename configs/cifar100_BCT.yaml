@@ -1,5 +1,5 @@
 arch_params:
-  arch: VIT_google
+  arch: ResNet50
   num_classes: 100 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
   embedding_dim_old: 128
@@ -7,8 +7,8 @@ arch_params:
   norm_feature: True
 
 optimizer_params:
-  algorithm: sgd
-  lr: 0.01
+  algorithm: adam
+  lr: 0.001
   weight_decay: 0
   no_bn_decay: False
   momentum: 0.9
@@ -23,11 +23,11 @@ dataset_params:
 
 lr_policy_params:
   algorithm: cosine_lr
-  warmup_length: 2
-  epochs: 30
-  lr: 0.01
+  warmup_length: 20
+  epochs: 100
+  lr: 0.001
 
-epochs: 30
+epochs: 100
 alpha: 10
 old_model_path: checkpoints/cifar100_old.pt 
-output_model_path: checkpoints/cifar100_bct_vit.pt
+output_model_path: checkpoints/cifar100_bct.pt

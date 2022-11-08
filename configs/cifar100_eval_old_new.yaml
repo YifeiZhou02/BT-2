@@ -1,5 +1,5 @@
 arch_params:
-  arch: VIT_google_ortho_shallow
+  arch: ResNet50
   num_classes: 100 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
   last_nonlin: True
@@ -8,7 +8,7 @@ arch_params:
   C: 2
 
 gallery_model_path: checkpoints/cifar100_old.pt
-query_model_path: checkpoints/cifar100_new_transfer_vit.pt.checkpoint
+query_model_path: checkpoints/cifar100_transfer_new.pt.checkpoint
 
 
 eval_params:

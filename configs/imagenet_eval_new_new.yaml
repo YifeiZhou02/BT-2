@@ -9,7 +9,7 @@ arch_params:
   C: 2
 
 query_model_path:  checkpoints/imagenet_new_transfer_vit.pt.checkpoint
-
+# If gallery model is not specified, then default to be query_model 
 
 eval_params:
   distance_metric: cosine
