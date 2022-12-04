@@ -547,16 +547,16 @@ class ResNet_ortho(nn.Module):
             backward compatible with the old embedding and retains inforation
             of an independently trained new model.
         """
-        _, old_feature = self.resnet(x)
-        feature = self.fc3(F.relu(old_feature))
-        old_feature = old_feature.reshape(old_feature.size(0), -1)[:,
-                                                                   :self.embedding_dim]
-        feature = feature.reshape(feature.size(0), -1)
+        _, feature = self.resnet(x)
+        old_feature = self.fc3(F.relu(feature))
+        feature = feature.reshape(feature.size(0), -1)[:,
+                                                       :self.embedding_dim]
+        old_feature = old_feature.reshape(old_feature.size(0), -1)
         if self.norm_feature:
             old_feature = F.normalize(old_feature)
             feature = F.normalize(feature)
 
-        old_feature, feature = feature, old_feature
+        # old_feature, feature = feature, old_feature
 
         new_feature = torch.cat([F.normalize(old_feature[:, :self.to_add_dim]),
                                  self.ortholinear_p(self.C*feature)], dim=1)
