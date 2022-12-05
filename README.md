@@ -1,5 +1,5 @@
 # BT-2
-Research Code for "BT^2: Backward-compatible Training with Basis Transformation".
+Research Code for "BT^2: Backward-compatible Training with Basis Transformation" (https://arxiv.org/abs/2211.03989).
 
 Code adapted from https://github.com/apple/ml-fct.
 
