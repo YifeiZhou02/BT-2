@@ -29,5 +29,6 @@ lr_policy_params:
 
 epochs: 100
 alpha: 10
+label_smoothing: 0.1
 old_model_path: checkpoints/cifar100_old.pt 
 output_model_path: checkpoints/cifar100_bct.pt
