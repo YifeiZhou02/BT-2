@@ -28,5 +28,6 @@ lr_policy_params:
 
 epochs: 25
 alpha: 10
+label_smoothing: 0.1
 old_model_path: checkpoints/imagenet_old.pt 
 output_model_path: checkpoints/imagenet_bct_vit.pt
