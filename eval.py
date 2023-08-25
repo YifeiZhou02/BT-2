@@ -32,10 +32,10 @@ def main(config: Dict) -> None:
         except:
             model = torch.nn.DataParallel(model)
             model.load_state_dict(checkpoint['model_state_dict'])
-        gallery_model = model.to(device)
         query_model = model.to(device)
     else:
         query_model = torch.jit.load(config.get('query_model_path')).to(device)
+    gallery_model = query_model
     if config.get('gallery_arch_params') is not None:
         gallery_model = get_model(config.get('gallery_arch_params'))
         checkpoint = torch.load(config.get('gallery_model_path'))

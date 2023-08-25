@@ -8,7 +8,7 @@ arch_params:
 optimizer_params:
   algorithm: adam
   lr: 0.001
-  weight_decay: 0
+  weight_decay: 0.000030517578125
   no_bn_decay: False
   momentum: 0.9
   nesterov: False
@@ -22,10 +22,11 @@ dataset_params:
 
 lr_policy_params:
   algorithm: cosine_lr
-  warmup_length: 20
+  warmup_length: 5
   epochs: 100
   lr: 0.001
 
 epochs: 100
 label_smoothing: 0.1
 output_model_path: checkpoints/cifar100_new.pt
+

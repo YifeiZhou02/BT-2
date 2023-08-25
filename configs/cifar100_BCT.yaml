@@ -2,28 +2,27 @@ arch_params:
   arch: ResNet50
   num_classes: 100 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
-  embedding_dim_old: 128
   last_nonlin: True
   norm_feature: True
-
+   
 optimizer_params:
   algorithm: adam
   lr: 0.001
-  weight_decay: 0
+  weight_decay: 0.000030517578125
   no_bn_decay: False
   momentum: 0.9
   nesterov: False
 
 dataset_params:
   name: cifar100 
-  data_root: data_store/cifar-100-python # /home/yz639/BCT/imagenet-1k # This should contain training and validation dirs.
+  data_root: data_store/cifar-100-python  # This should contain training and validation dirs.
   num_classes: 100 # This is the number of classes to include for training.
   num_workers: 16
-  batch_size: 64
+  batch_size: 128
 
 lr_policy_params:
   algorithm: cosine_lr
-  warmup_length: 20
+  warmup_length: 5
   epochs: 100
   lr: 0.001
 

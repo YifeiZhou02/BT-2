@@ -22,7 +22,7 @@ dataset_params:
 
 lr_policy_params:
   algorithm: cosine_lr
-  warmup_length: 5
+  warmup_length: 20
   epochs: 100
   lr: 0.001
 

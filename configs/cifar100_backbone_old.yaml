@@ -8,7 +8,7 @@ arch_params:
 optimizer_params:
   algorithm: adam
   lr: 0.001
-  weight_decay: 0
+  weight_decay: 0.000030517578125
   no_bn_decay: False
   momentum: 0.875
   nesterov: False

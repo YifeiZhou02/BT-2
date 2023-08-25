@@ -1,5 +1,5 @@
 arch_params:
-  arch: VIT_google_ortho_shallow
+  arch: ResNet50_ortho
   num_classes: 1000 # This is the number of classes for architecture FC layer.
   embedding_dim: 128
   embedding_dim_old: 128
@@ -8,7 +8,7 @@ arch_params:
   to_add_dim: 32
   C: 2
 
-query_model_path:  checkpoints/imagenet_new_transfer_vit.pt.checkpoint
+query_model_path:  checkpoints/imagenet_transfer_new.pt.checkpoint
 # If gallery model is not specified, then default to be query_model 
 
 eval_params:
@@ -20,5 +20,5 @@ eval_params:
 dataset_params: # Test set of the dataset will be used as both gallery and query sets.
   name: imagenet
   data_root: data_store/imagenet-1k
-  num_workers: 16
+  num_workers: 4
   batch_size: 256
